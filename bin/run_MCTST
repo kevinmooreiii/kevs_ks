@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+"""
+  Calculates the rate constant for a reaction using Mircrocanonical Transition State Theory.
+"""
+
+import sys
+sys.path.insert(0,'/home/kmoore/argonne/kin_scripts/lib')
+
+from decimal import Decimal   # For printing in scientific notation
+import molecule               # Parses input
+import energy                 # Calculates thermodynamic energy values, 
+import states                 # Calculates the sum and density of vibrational states at certain energy levels 
+import partition_function     # Calculates partition functions
+import rate_constant          # Calculates the rate constants
+
+
+# Obtain information about the reactant and transition state from the input file specified in command line
+REAC, TS, energy_levels = molecule.parse_input(sys.argv[1])
+
+# Compute the rate constant for each energy level
+print( '{0:5s} {1:13s}'.format('E(cm-1)', 'k(cm-1)'))
+for E in energy_levels:
+
+  # Determine reactant and transition state levels for counting
+  barrier = energy.calc_H0(TS['energy'], TS['freqs']) - energy.calc_H0(REAC['energy'], REAC['freqs'])  
+
+  # Calculate the sum and density of states
+  N_E = states.calc_sum_of_states(TS['frequencies'], barrier, E)
+  p_E = states.calc_density_of_states(REAC['frequencies'], E) 
+
+  # Compute the microcanonical TST rate constant
+  k_E = rate_constant.calc_microcanon_tst_rate_constant(N_E, p_E, E)
+
+  # Print rate constants to screen
+  print( '{0:4.1f} {1:.5E}'.format(E,k_E) )
+
+#### END PROGRAM #####
+

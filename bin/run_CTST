@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+"""
+  Calculates the rate constant for a reaction using Canonical Transition State Theory.
+"""
+
+import sys
+sys.path.insert(0,'/home/kmoore/argonne/kin_scripts/lib')
+
+from decimal import Decimal   # For printing in scientific notation
+import molecule               # Parses input
+import energy                 # Calculates thermodynamic energy values, 
+import partition_function     # Calculates partition functions
+import rate_constant          # Calculates the rate constants
+
+
+# Obtain information about the reactant and transition state from the input file specified in command line
+REAC, TS, temperature = molecule.parse_input(sys.argv[1])
+
+# Compute the rate constant for each temperature 
+print( '{0:5s} {1:13s}'.format('T(K)', 'k(T)'))
+for T in temperature:
+
+  # Calculate total partition function for reactant and transition state
+  Q_reac = partition_function.calc_Q_total(T, **REAC)
+  Q_ts   = partition_function.calc_Q_total(T, **TS)
+
+  # Calculate the reaction barrier height
+  barrier = energy.calc_H0(TS['energy'], TS['freqs']) - energy.calc_H0(REAC['energy'], REAC['freqs'])
+  #print(barrier)
+  #print(barrier * (1.0 / 4.814) * (1.0 / 1000.0) * (6.0221409e23)  )
+
+  # Calculate the tunneling coefficient
+  kappa_T = calc_tunn_coeff(tunneling)
+
+  # Calculate the canonical TST rate constant
+  k_T = rate_constant.calc_canon_tst_rate_constant(Q_ts, Q_reac, barrier, kappa_T, T)
+
+  # Print rate constants to screen
+  print( '{0:4.1f} {1:.5E}'.format(T,k_T) )
+
+##### END PROGRAM #####
+
