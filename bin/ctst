@@ -14,29 +14,27 @@ import rate_constant          # Calculates the rate constants
 
 
 # Obtain information about the reactant and transition state from the input file specified in command line
-REAC, TS, temperature = molecule.parse_input(sys.argv[1])
+REAC1, TS, temperature = molecule.parse_input(sys.argv[1])
 
 # Compute the rate constant for each temperature 
 print( '{0:5s} {1:13s}'.format('T(K)', 'k(T)'))
 for T in temperature:
 
   # Calculate total partition function for reactant and transition state
-  Q_reac = partition_function.calc_Q_total(T, **REAC)
+  Q_reac = partition_function.calc_Q_total(T, **REAC1)
   Q_ts   = partition_function.calc_Q_total(T, **TS)
 
   # Calculate the reaction barrier height
-  barrier = energy.calc_H0(TS['energy'], TS['freqs']) - energy.calc_H0(REAC['energy'], REAC['freqs'])
-  #print(barrier)
-  #print(barrier * (1.0 / 4.814) * (1.0 / 1000.0) * (6.0221409e23)  )
+  barrier = energy.calc_enthalpy_0K(TS['energy'], TS['freqs']) - energy.calc_enthalpy_0K(REAC1['energy'], REAC1['freqs'])
 
   # Calculate the tunneling coefficient
-  kappa_T = calc_tunn_coeff(tunneling)
+  kappa_T = calc_tunn_coeff(REAC1['energy'], PROD['energy'], TS['tunneling'])
 
   # Calculate the canonical TST rate constant
-  k_T = rate_constant.calc_canon_tst_rate_constant(Q_ts, Q_reac, barrier, kappa_T, T)
+  k_T = rate_constant.calc_canon_tst_rate_constant(T, Q_ts, Q_reac, barrier, kappa_T)
 
   # Print rate constants to screen
-  print( '{0:4.1f} {1:.5E}'.format(T,k_T) )
+  print( '{0:4.1f} {1:.5E}'.format(T, k_T) )
 
 ##### END PROGRAM #####
 

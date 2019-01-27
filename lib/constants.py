@@ -8,6 +8,7 @@ kB = 1.38064852e-23   # Boltzmann Constant in J/K (kg.m2)/(s2.K)
 h  = 6.62607015e-34   # Planck's Constant in J.s (kg.m2)/(s)
 c  = 2.9972548e8      # Speed of Light in m/s 
 na = 6.0221409e23     # Avogadros number in particles/mol
+beta = (1.0/(h*kB)) 
 
 # Conversion Factors
 amu_to_kg = 1.66054e-27 

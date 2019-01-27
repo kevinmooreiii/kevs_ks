@@ -4,22 +4,15 @@
 
 import sys
 import numpy as np
-import math
-import molecule
-from constants import atom_mass
 
-def project_Hessian(geom):
+import molecule
+
+def project_Hessian(masses, xyz, H):
   ''' Project the motions out of the Hessian. '''
 
-  # Get the masses
-  atom_symbols = []
-  for coord in geom:
-    atom_symbols.append( coord[0] )
-  mass = np.asarray( [ atom_mass[symbol] for symbol in atom_symbols ] ) 
-
   # Calculate the vectors associated with translation, external rotation, and hindered internal rotation 
-  TransMat   = build_translation_vectors(mass)
-  ExtRotMat  = build_ext_rotation_vectors(mass, geom)
+  TransMat   = build_translation_vectors(masses)
+  ExtRotMat  = build_ext_rotation_vectors(masses, xyz)
   #HindRotMat = build_hind_rotation_vectors()
   NHindRot = 0
   Natoms = len(mass)
@@ -42,7 +35,7 @@ def project_Hessian(geom):
   P = I - Ds
 
   # Project out the modes out of the Hessian Matrix 
-  #Hproj = np.dot(P.T * H * P
+  #Hproj = np.dot(P.T * H * P)
 
   # Diagonalize the Projected Hessian
   #lam, L = np.linalg.eig(Hproj)
@@ -71,7 +64,7 @@ def build_translation_vectors(masses):
   return Trans
 
 
-def build_ext_rotation_vectors(masses, geom):
+def build_ext_rotation_vectors(masses, xyz):
   ''' Builds the vectors that describe the external rotation of the molecule. 
   '''    
 
@@ -79,8 +72,10 @@ def build_ext_rotation_vectors(masses, geom):
   Natoms = len(masses)
  
   # Calculate the moment-of-inertia and center-of-mass
-  mom_inert, X, Rcom = molecule.calc_moment_of_inertia(geom)
+  Rcom = molecule.calc_center_of_mass(masses, xyz)
+  Ip, Xp = molecule.calc_moment_of_inertia(masses, xyz)
 
+  # Obtain vectors for the projection of ...
   Px = np.dot( Rcom, X[0] )
   Py = np.dot( Rcom, X[1] )
   Pz = np.dot( Rcom, X[2] )
@@ -88,19 +83,36 @@ def build_ext_rotation_vectors(masses, geom):
   RotExt = np.zeros((3*Natoms,3),dtype=float)
   for i in range(3*Natoms):
     for j in range(3):
-      RotExt[i][j] = ( Py[i]*X[j][2] - Pz[i]*X[j][1] ) / np.sqrt(masses[i])
-      RotExt[i][j] = ( Pz[i]*X[j][0] - Px[i]*X[j][2] ) / np.sqrt(masses[i])
-      RotExt[i][j] = ( Px[i]*X[j][1] - Py[i]*X[j][0] ) / np.sqrt(masses[i])
+      RotExt[i][j] = ( Py[i]*Xp[j][2] - Pz[i]*Xp[j][1] ) / np.sqrt(masses[i])
+      RotExt[i][j] = ( Pz[i]*Xp[j][0] - Px[i]*Xp[j][2] ) / np.sqrt(masses[i])
+      RotExt[i][j] = ( Px[i]*Xp[j][1] - Py[i]*Xp[j][0] ) / np.sqrt(masses[i])
 
   return RotExt
 
 
-def build_hind_rotor_vectors():
+def build_hind_rotor_vectors(xyz):
   ''' Builds the vectors that describe the rotaiton of a hindered rotor. 
   '''    
+
+  # Initialize list to hold all of the Rotor vectors
+  Nrotors = 0
+  Rotors = []
+
+  for i in range(Nrotors):
+
+    # Numbers of the pivot atoms
+    pivotA = 
+    pivotB =   
   
+    # Numbers denoting atoms attached to pivot atoms A and B 
+    attA = []
+    attB = [] 
   
-  
+    for j in range(len(attA)):
+      np.cross( (xyz[j]-xyz[pivotA]), (xyz[pivotA]-xyz[pivotB]) ) / np.norm(xyz[pivotA]-xyz[pivotB]) 
+    for j in range(len(attB)):
+      np.cross( (xyz[j]-xyz[pivotB]), (xyz[pivotB]-xyz[pivotA]) ) / np.norm(xyz[pivotB]-xyz[pivotA]) 
+
   return None 
 
 
@@ -112,7 +124,7 @@ def ortho_D_matrix():
 
 #if __name__ == 'main':
 REAC, TS, temperature = molecule.parse_input(sys.argv[1])
-print(project_Hessian(REAC['geom']))
+print(project_Hessian(TS['masses,'], TS['xyz'], TS['hessian']))
 
 ##### END PROGRAM #####
 

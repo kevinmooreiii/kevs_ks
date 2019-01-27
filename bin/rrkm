@@ -29,7 +29,7 @@ for E in energy_levels:
   p_E = states.calc_density_of_states(REAC['frequencies'], E) 
 
   # Compute the microcanonical TST rate constant
-  k_E = rate_constant.calc_microcanon_tst_rate_constant(N_E, p_E, E)
+  k_E = rate_constant.calc_rrkm_ke_rate_constant(N_E, p_E, E)
 
   # Print rate constants to screen
   print( '{0:4.1f} {1:.5E}'.format(E,k_E) )

@@ -3,10 +3,10 @@
   Tunneling Models Supported: NoTunnel, Eckart, and Wigner 
 '''
 
-
 from constants import kB, h
 
-def calc_tunn_coeff(model, E_reac, E_prod, E_TS, vTS, T):
+
+def calc_tunn_coeff(E_reac, E_prod, model, E_TS, vTS, T):
   ''' Calls the correct tunneling correction based on the tunneling model.
   '''
   

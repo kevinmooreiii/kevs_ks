@@ -3,6 +3,7 @@
 '''
 
 import numpy as np
+
 from constants import atom_mass
 
 
@@ -62,6 +63,7 @@ def parse_input(input_file_name):
 
     if 'Geometry' in lines[i]:
       geom_start = i + 1
+      natoms = int(lines[i].strip().split()[1])
       geom_end = geom_start + int(lines[i].strip().split()[1])
       reac1_masses = [ atom_mass[lines[j].strip.split()[0]] for j in range(geom_start, geom_end) ]     
       reac1_coords = [ lines[j].strip().split()[1:] for j in range(geom_start, geom_end) ]     
@@ -81,10 +83,10 @@ def parse_input(input_file_name):
       eleclvls_start = i + 1
       eleclvls_end = eleclvls_start + int(lines[i].strip().split()[1])
       reac1_eleclvls = [ lines[j].strip().split()[1:] for j in range(geom_start, geom_end) ]     
-    
+
   # Grab the transition state information
   ts_moltype = lines[ts_start].strip().split()[1].upper() 
-  ts_masses, ts_coords, ts_energy, ts_freqs, ts_sym, ts_eleclvls, ts_tunn = [], '', [], '', [], []
+  ts_masses, ts_coords, ts_energy, ts_freqs, ts_sym, ts_eleclvls, ts_tunn, ts_hessian, ts_hindrot = [], '', [], '', [], [], [], []
   for i in range(ts_start, ts_end):
 
     if 'Geometry' in lines[i]:
@@ -112,29 +114,46 @@ def parse_input(input_file_name):
     if 'Tunneling' in lines[i]:
       ts_tunn =  lines[i+1].strip().split() 
 
+    #if 'Hessian' in lines[i]:
+    #  hessian_start = i + 1
+    #  hessian_lines = [ lines[j].strip().split() for j in range(hessian_start, hessian_start + natoms) ] 
+    #  hessian_lowtri = np.array( hessian_lines )
+    #  hessian = some code with low_tri
+
+    if 'HindRot' in lines[i]:
+      hindrot_start = 
+      # Get pivots: hindrot.append(x.strip().split()[1:])
+      # Get atoms_conn_to_pivots: hindrot.append(x.strip().split()[1:])
+      # Get potential: hindrot.append(x.strip().split()[1:])
+
+
+ 
+
   # Store the information in dictionaries  
   REAC1 = {
-    'moltype'    : reac1_moltype,
-    'masses'     : reac1_masses,
-    'xyz'        : reac1_xyz,
-    'energy'     : reac1_energy,
-    'freqs'      : reac1_freqs,
-    'sym'        : reac1_sym,
-    'eleclevels' : reac1_eleclevels,
+    'moltype'     : reac1_moltype,
+    'masses'      : reac1_masses,
+    'xyz'         : reac1_xyz,
+    'energy'      : reac1_energy,
+    'freqs'       : reac1_freqs,
+    'sym'         : reac1_sym,
+    'eleclevels'  : reac1_eleclevels,
   }
 
   TS = {
-    'moltype'    : ts_moltype,
-    'masses'     : ts_masses,
-    'xyz'        : ts_xyz,
-    'energy'     : ts_energy,
-    'freqs'      : ts_freqs,
-    'sym'        : ts_sym,
-    'eleclevels' : ts_eleclevels,
-    'tunneling'  : ts_tunn 
+    'moltype'     : ts_moltype,
+    'masses'      : ts_masses,
+    'xyz'         : ts_xyz,
+    'energy'      : ts_energy,
+    'freqs'       : ts_freqs,
+    'sym'         : ts_sym,
+    'eleclevels'  : ts_eleclevels,
+    'tunneling'   : ts_tunn,
+    'hessian'     : ts_hesian,
+    'hindrot'     : ts_hindrot 
   }
 
-  return REAC, TS, k_var
+  return REAC1, TS, k_var
 
 
 def det_rotation_number(sym):
@@ -144,9 +163,8 @@ def det_rotation_number(sym):
 
   return sigma
 
-
-def calc_moment_of_inertia(masses, xyz):
-  ''' Find the principal moments of intertia using the molecular xyz coordinates. '''
+def calc_center_of_mass(masses, xyz):
+  ''' Determines the center of mass '''
 
   # Determine the coordinates of the center-of-mass
   xm, ym, zm, mass_total = 0.0, 0.0, 0.0, 0.0
@@ -156,8 +174,17 @@ def calc_moment_of_inertia(masses, xyz):
     zm += masses[i] * xyz[i,2]    
     mass_total += masses[i]
   
+  # Construct a vector for the center of mass
   R_com = np.array( [ (xm / mass_total), (ym / mass_total), (zm / mass_total) ] )
   
+  return R_com
+
+def calc_moment_of_inertia(masses, xyz):
+  ''' Find the principal moments of intertia using the molecular xyz coordinates. '''
+
+  # Calculate the center of mass
+  R_com = calc_center_of_mass(masses, xyz)
+
   # Translate the coordinates to the center-of-mass
   R_trans = xyz - R_com
 
@@ -182,5 +209,5 @@ def calc_moment_of_inertia(masses, xyz):
   # moments-of-inertia () and the principal axes of rotation (X)
   Ip, Xp = np.linalg.eig(I) 
 
-  return Ip, Xp, R_trans
+  return Ip, Xp
 

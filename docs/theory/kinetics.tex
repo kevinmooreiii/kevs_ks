@@ -1,0 +1,131 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}           % Math functions
+\usepackage{multirow}          % Tables with multirow
+\usepackage{textcomp}          % For \texttildelow
+\usepackage[version=3]{mhchem} % Formula subscripts using \ce{}
+\usepackage[margin=1in]{geometry}
+
+
+%%%%% Defining Commands to Facilitate Writing %%%%% 
+% Units
+\newcommand{\cm}{\ensuremath{\text{cm}^{-1}}}
+\newcommand{\kcal}{\ensuremath{\text{kcal~mol}^{-1}}}
+\newcommand{\dgr}{\ensuremath{^\circ}}
+\newcommand{\eden}{\ensuremath{ea_{0}^{-3}}}
+\newcommand{\elec}{\ensuremath{e^{-}}}
+% Energy
+\newcommand{\Do}{\ensuremath{D_{0}}}
+\newcommand{\De}{\ensuremath{D_{\text{e}}}}
+\newcommand{\dEe}{\ensuremath{\Delta E_{\text{e}}}}
+\newcommand{\dEintgr}{\ensuremath{\Delta E_{\text{int,gr}}}}
+\newcommand{\dEint}{\ensuremath{\Delta E_{\text{int}}}}
+\newcommand{\dEcbs}{\ensuremath{\Delta E_{\text{CBS}}}}
+\newcommand{\dHzero}{\ensuremath{\Delta H_{\text{0K}}}}
+\newcommand{\dzpve}{\ensuremath{\Delta_\textsc{ZPVE}}}
+\newcommand{\dcore}{\ensuremath{\Delta_\text{CORE}}}
+\newcommand{\drel}{\ensuremath{\Delta_\text{REL}}}
+\newcommand{\ddboc}{\ensuremath{\Delta_\textsc{DBOC}}}
+% Other Text Shortcuts
+\newcommand{\etal}{\textit{et al.}}
+\newcommand{\abinitio}{\textit{ab initio}}
+\newcommand{\ii}{\textit{i}}
+\newcommand{\tnm}{\textnormal}
+% Constants
+\newcommand{\kB}{k_{\tnm{B}}}
+
+
+\begin{document}
+
+\title{Kinetics Theory}
+\author{Kevin B. Moore III}
+\date{}
+\maketitle
+
+\section{Canonical TST}
+
+\begin{align}
+k(T) = \kappa (T) \frac{ \kB T }{ h } \frac{m}{m^{\dagger}} 
+         \frac{ Q^{\dagger} }{ Q_{\tnm{reac}} } e^{ -E / \kB T }
+\end{align}
+
+\section{Microcanonical TST}
+
+\begin{align}
+k(E) =  \frac{ N^{\dagger}(E) }{ h\rho (E) } 
+\end{align}
+
+\section{Partition Functions}
+
+
+
+
+Generally use rigid-rotor, harmonic oscillator (RRHO) approximations to determine the partition functions
+
+Generally use discrete partition function
+\begin{align*}
+Q = \sum_{i} g_{i} e^{ -E_{i}/\kB T }
+\end{align*}
+
+It is assumed that all of the components of $Q$ are seperable
+\begin{align*}
+Q = q_{vib}q_{rot}q_{trans}q_{elec}
+\end{align*}
+where $q_{vib}$, $q_{rot}$, $q_{trans}$, $q_{elec}$ are the partition functions describing the vibrational, rotational, translation, and electronic energy levels, respectively.
+
+
+\subsection{Vibrational}
+
+The vibrational partition function is often assumed with a harmonic oscillator models, where each vibration is an uncoupled harmonic oscillator with energy levels:
+\begin{align*}
+E_{vib} = h\omega
+\end{align*}
+where $\omega$ is the frequency of vibration. Therefore we can get the partition function for a \textit{specific} vibration where each level is equally spaced (i.e., $E_{vib,n} = nh\omega$ for the $n$-th vibrational state of mode with frequency $\omega$):
+\begin{align*}
+q_{vib} &= \sum_{n=1}^{\infty} e^{-E_{vib,n}/ \kB T} \\
+		&= \sum_{n=1}^{\infty} e^{-nh\omega/ \kB T} \\
+		&= \sum_{n=1}^{\infty} ( e^{-h\omega/ \kB T} )^{n} 
+\end{align*}
+
+This equation can be recast by recognizing that we have a convergent infinite series:
+\begin{align*}
+q_{vib} = \frac{1}{1-e^{-h\omega/ \kB T}} 
+\end{align*}
+
+To get the overall vibrational partition function, we note that the levels are uncoupled, and are thus seperable. Hence, the total partition function is the product of the partition functions
+for each vibration:
+\begin{align*}
+Q_{vib_total} &= \prod_{i}^{N_{\tnm{vib}}} q_{vib,i} \\
+              &= \prod_{i}^{N_{\tnm{vib}}} \frac{1}{1-e^{-h\nu/ \kB T}}   
+\end{align*}
+
+\subsection{Rotational}
+
+\begin{align*}
+E_{rot} = BJ(J+1) 
+\end{align*}
+
+\subsection{Translational}
+\subsection{Electronic}
+
+\section{Projections}
+
+A projection operator is constructed 
+
+\section{Tunneling}
+
+Quantum tunneling effects placed into the $kappa{T}$ factor
+
+
+\section{Instructions}
+
+
+
+
+
+
+
+%%%%% References %%%%%
+%\bibliography{kinetics-refs}
+
+\end{document}
