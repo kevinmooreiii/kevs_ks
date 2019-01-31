@@ -1,2 +1,2 @@
 # kevs_ks
-Python Script for calculating rate constants
+Python Script for calculating rate constants really well
