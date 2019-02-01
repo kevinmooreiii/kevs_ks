@@ -1,10 +1,9 @@
-""" 
-Calculates the rate constant
+"""
+Libraries for computing rate constants
   SUPPORTED: Canoncial Transition State Theory, Microcanonical RRKM Theory
 """
 
 import numpy as np
-
 from constants import kB, h
 
 
