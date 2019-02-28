@@ -1,6 +1,5 @@
 """
-Libraries for computing rate constants
-  SUPPORTED: Canoncial Transition State Theory, Microcanonical RRKM Theory
+  compute rate constants
 """
 
 import numpy as np
